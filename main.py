@@ -34,20 +34,17 @@ def main():
 
     font = pygame.font.SysFont("Arial", 28, italic=True)
     text_surface = font.render("Welcome to Asteroids!", True, "green")
-    score_board = font.render(f"Score: {score}", False, "green")
 
     header_rect = text_surface.get_rect()
     header_rect.center = (x, 20)
 
-    
-    score_rect = score_board.get_rect()
+    score_rect = pygame.Rect(0,0,0,0)
     score_rect.center = (100, 500)
-    
-    
     
     while True:
         log_state()
-        
+        score_board = font.render(f"Score: {score}", False, "green")
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -60,6 +57,7 @@ def main():
             if ast.collides_with(player1):
                 log_event("player_hit")
                 print("Game over!")
+                print(f"your score was {score}")
                 sys.exit()
 
         for ast in asteroids:
@@ -68,6 +66,7 @@ def main():
                     log_event("asteroid_shot")
                     e_shot.kill()
                     ast.split()
+                    score += 5
         
         screen.fill("black")
         screen.blit(text_surface, header_rect)
