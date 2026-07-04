@@ -14,6 +14,7 @@ def main():
     dt: float = 0.0
     x = constants.SCREEN_WIDTH / 2
     y = constants.SCREEN_HEIGHT / 2
+    score = 0
 
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
     
@@ -33,9 +34,16 @@ def main():
 
     font = pygame.font.SysFont("Arial", 28, italic=True)
     text_surface = font.render("Welcome to Asteroids!", True, "green")
+    score_board = font.render(f"Score: {score}", False, "green")
 
-    text_rect = text_surface.get_rect()
-    text_rect.center = (x, 20)
+    header_rect = text_surface.get_rect()
+    header_rect.center = (x, 20)
+
+    
+    score_rect = score_board.get_rect()
+    score_rect.center = (100, 500)
+    
+    
     
     while True:
         log_state()
@@ -62,7 +70,8 @@ def main():
                     ast.split()
         
         screen.fill("black")
-        screen.blit(text_surface, text_rect)
+        screen.blit(text_surface, header_rect)
+        screen.blit(score_board, score_rect)
        
         for drawables in drawable:
             drawables.draw(screen)
