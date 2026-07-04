@@ -32,6 +32,15 @@ def main():
     asteroidfield1 = asteroidfield.AsteroidField()
     player1 = player.Player(x, y)
 
+    try:
+        # .convert creates copy that draws more quickly than .convert_alpha [trans]
+        bg_image = pygame.image.load("space.jpg").convert()
+
+        background = pygame.transform.scale(bg_image, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+    except pygame.error as e:
+        print("unable to load image")
+        sys.exit()
+    
     font = pygame.font.SysFont("Arial", 28, italic=True)
     text_surface = font.render("Welcome to Asteroids!", True, "green")
 
@@ -68,7 +77,7 @@ def main():
                     ast.split()
                     score += 5
         
-        screen.fill("black")
+        screen.blit(background, (0, 0))
         screen.blit(text_surface, header_rect)
         screen.blit(score_board, score_rect)
        
