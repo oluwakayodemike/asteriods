@@ -1,3 +1,4 @@
+import os
 import sys
 import pygame
 import constants
@@ -8,6 +9,8 @@ import shot
 from logger import log_state, log_event
 
 def main():
+    BASE_DIR = os.path.dirname(__file__)
+    
     pygame.init()
     clock = pygame.time.Clock()
     
@@ -34,7 +37,7 @@ def main():
 
     try:
         # .convert creates copy that draws more quickly than .convert_alpha [trans]
-        bg_image = pygame.image.load("space.jpg").convert()
+        bg_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "space.jpg")).convert()
 
         background = pygame.transform.scale(bg_image, (constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
     except pygame.error as e:
@@ -46,14 +49,14 @@ def main():
 
     header_rect = text_surface.get_rect()
     header_rect.center = (x, 20)
-
-    score_rect = pygame.Rect(0,0,0,0)
-    score_rect.center = (100, 500)
     
     while True:
         log_state()
         score_board = font.render(f"Score: {score}", False, "green")
-
+        score_rect = score_board.get_rect()
+        score_rect.center = (100, 500)
+        # score_rect = score_board.get_rect(center=(100, 500))
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -78,12 +81,11 @@ def main():
                     score += 5
         
         screen.blit(background, (0, 0))
-        screen.blit(text_surface, header_rect)
-        screen.blit(score_board, score_rect)
-       
         for drawables in drawable:
             drawables.draw(screen)
             
+        screen.blit(text_surface, header_rect)
+        screen.blit(score_board, score_rect)
         pygame.display.flip()
 
 if __name__ == "__main__":
