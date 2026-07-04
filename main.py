@@ -30,6 +30,13 @@ def main():
 
     asteroidfield1 = asteroidfield.AsteroidField()
     player1 = player.Player(x, y)
+
+    font = pygame.font.SysFont("Arial", 28, italic=True)
+    text_surface = font.render("Welcome to Asteroids!", True, "green")
+
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x, 20)
+    
     while True:
         log_state()
         
@@ -54,7 +61,9 @@ def main():
                     e_shot.kill()
                     ast.split()
         
-        screen.fill("black")        
+        screen.fill("black")
+        screen.blit(text_surface, text_rect)
+       
         for drawables in drawable:
             drawables.draw(screen)
             
