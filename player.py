@@ -21,6 +21,15 @@ class Player(circleshape.CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
 
+    def draw(self, screen: pygame.Surface) -> None:
+        image = self.spaceship
+        
+        # since spaceship image points up but our game logic treats Vector2(0, 1) [down] as forward, we must add a 180deg to rotation  
+        rotated = pygame.transform.rotate(image, (-self.rotation + 180))
+        centered_rect = rotated.get_rect(center=(self.position))
+        screen.blit(rotated, centered_rect)
+        pass
+        
     def rotate(self, dt) -> None:
         self.rotation += constants.PLAYER_TURN_SPEED * dt
 
