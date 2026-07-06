@@ -8,6 +8,10 @@ class Player(circleshape.CircleShape):
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
         self.shot_cool_down_timer = 0
+        self.spaceship = pygame.image.load("assets/spaceship.png").convert_alpha()
+
+        # fit spaceship into circle 
+        self.spaceship = pygame.transform.scale(self.spaceship, (self.radius * 2, self.radius * 2))
         
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
