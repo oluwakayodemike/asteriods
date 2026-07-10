@@ -86,6 +86,5 @@ class Player(circleshape.CircleShape):
         offset_y = int((other.position.y - other.radius) - ship_rect.y)
 
         # overlap() returns the first point of contact or None if they're missed.
-        print(ship_mask.overlap(asteroid_mask, (offset_x, offset_y)))
         return ship_mask.overlap(asteroid_mask, (offset_x, offset_y)) is not None
         
