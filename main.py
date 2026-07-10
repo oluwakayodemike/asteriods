@@ -69,7 +69,13 @@ def main():
             if player1.collides_with(ast):
                 if player1.health > 0:
                     player1.position = pygame.Vector2(x, y)
+
+                    # kill all momentum and reset ship direction
+                    player1.velocity = pygame.Vector2(0, 0)
+                    player1.rotation = 0
+                    
                     player1.health -= 1
+                    player1.invisible_timer = constants.PLAYER_INVISIBILITY_WINDOW
                 else:
                     log_event("player_hit")
                     print("Game over!")

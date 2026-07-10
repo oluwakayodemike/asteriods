@@ -8,6 +8,7 @@ class Player(circleshape.CircleShape):
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
         self.health = 3
+        self.invisible_timer = 0
         
         self.shot_cool_down_timer = 0
         self.spaceship = pygame.image.load("assets/spaceship.pod.1.png").convert_alpha()
@@ -24,13 +25,17 @@ class Player(circleshape.CircleShape):
         return [a, b, c]
 
     def draw(self, screen: pygame.Surface) -> None:
+        if self.invisible_timer > 0:
+            # flash spaceship on and off every 100ms
+            if (pygame.time.get_ticks() // 100) % 2 == 0:
+               return # skip drawing this frame  
+        
         image = self.spaceship
         
         # since spaceship image points up but our game logic treats Vector2(0, 1) [down] as forward, we must add a 180deg to rotation  
         rotated = pygame.transform.rotate(image, (-self.rotation + 180))
         centered_rect = rotated.get_rect(center=(self.position))
         screen.blit(rotated, centered_rect)
-        pass
         
     def rotate(self, dt) -> None:
         self.rotation += constants.PLAYER_TURN_SPEED * dt
@@ -49,6 +54,11 @@ class Player(circleshape.CircleShape):
             self.move(-dt)
         if keys[pygame.K_SPACE]:
                 self.shoot()
+
+        if self.invisible_timer > 0:
+            self.invisible_timer -= dt
+            if self.invisible_timer < 0:
+                self.invisible_timer = 0
 
     def move(self, dt) -> None:
         unit_vector = pygame.Vector2(0, 1)
@@ -70,6 +80,10 @@ class Player(circleshape.CircleShape):
         shot.velocity += rotated_with_speed_vector
 
     def collides_with(self, other) -> bool:
+        # collision shield
+        if self.invisible_timer > 0:
+            return False
+            
         if self.position.distance_to(other.position) > (self.radius * 2 + other.radius):
             return False
 
