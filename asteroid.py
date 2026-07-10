@@ -8,8 +8,17 @@ PRELOADED_ASTEROIDS = []
 def get_random_asteroid_img():
     if not PRELOADED_ASTEROIDS:
         for i in range(1, 11):
-            img = pygame.image.load(f"assets/ast{i}.png").convert_alpha()
-            PRELOADED_ASTEROIDS.append(img)
+            try: 
+                img = pygame.image.load(f"assets/ast{i}.png").convert_alpha()
+
+                # getting bounding box for non-transparent pixels and crop out empty space using it.
+                # then we save a copy into the mem.
+                bounding_box = img.get_bounding_rect()
+                cropped_img = img.subsurface(bounding_box).copy()
+                
+                PRELOADED_ASTEROIDS.append(cropped_img)
+            except FileNotFoundError:
+                print(f"could not find assets/ast{i}.png...")
             
     return random.choice(PRELOADED_ASTEROIDS)
         
@@ -19,8 +28,11 @@ class Asteroid(circleshape.CircleShape):
 
         base_ast = get_random_asteroid_img()
 
+        # smoothscale req. ints 
+        size = int(self.radius * 2)
+
         # using smoothscale to try to maintain high res while shrinking
-        self.asteroid = pygame.transform.smoothscale(base_ast, (self.radius * 2, self.radius *2))
+        self.asteroid = pygame.transform.smoothscale(base_ast, (size, size))
         self.mask = pygame.mask.from_surface(self.asteroid)
 
     def draw(self, screen: pygame.Surface) -> None:
