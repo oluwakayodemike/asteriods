@@ -11,7 +11,7 @@ class Player(circleshape.CircleShape):
         self.spaceship = pygame.image.load("assets/spaceship.pod.1.png").convert_alpha()
 
         # fit spaceship into circle 
-        self.spaceship = pygame.transform.scale(self.spaceship, (self.radius * 2, self.radius * 2))
+        self.spaceship = pygame.transform.scale(self.spaceship, (self.radius * 3, self.radius * 3))
         
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -68,7 +68,7 @@ class Player(circleshape.CircleShape):
         shot.velocity += rotated_with_speed_vector
 
     def collides_with(self, other) -> bool:
-        if not super().collides_with(other):
+        if self.position.distance_to(other.position) > (self.radius * 2 + other.radius):
             return False
 
         # generating mask from the ship's current rotated image
@@ -86,5 +86,6 @@ class Player(circleshape.CircleShape):
         offset_y = int((other.position.y - other.radius) - ship_rect.y)
 
         # overlap() returns the first point of contact or None if they're missed.
+        print(ship_mask.overlap(asteroid_mask, (offset_x, offset_y)))
         return ship_mask.overlap(asteroid_mask, (offset_x, offset_y)) is not None
         
