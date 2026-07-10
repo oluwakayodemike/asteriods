@@ -67,10 +67,14 @@ def main():
         
         for ast in asteroids:
             if player1.collides_with(ast):
-                log_event("player_hit")
-                print("Game over!")
-                print(f"your score was {score}")
-                sys.exit()
+                if player1.health > 0:
+                    player1.position = pygame.Vector2(x, y)
+                    player1.health -= 1
+                else:
+                    log_event("player_hit")
+                    print("Game over!")
+                    print(f"your score was {score}")
+                    sys.exit()
 
         for ast in asteroids:
             for e_shot in shots:

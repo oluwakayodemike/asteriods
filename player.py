@@ -7,6 +7,8 @@ class Player(circleshape.CircleShape):
     def __init__(self, x, y) -> None:
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
+        self.health = 3
+        
         self.shot_cool_down_timer = 0
         self.spaceship = pygame.image.load("assets/spaceship.pod.1.png").convert_alpha()
 
