@@ -66,7 +66,7 @@ def main():
         updatable.update(dt)
         
         for ast in asteroids:
-            if ast.collides_with(player1):
+            if player1.collides_with(ast):
                 log_event("player_hit")
                 print("Game over!")
                 print(f"your score was {score}")
