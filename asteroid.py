@@ -4,18 +4,29 @@ import pygame
 import circleshape
 import constants
 
+PRELOADED_ASTEROIDS = []
+def get_random_asteroid_img():
+    if not PRELOADED_ASTEROIDS:
+        for i in range(1, 11):
+            img = pygame.image.load(f"assets/ast{i}.png").convert_alpha()
+            PRELOADED_ASTEROIDS.append(img)
+            
+    return random.choice(PRELOADED_ASTEROIDS)
+        
 class Asteroid(circleshape.CircleShape):
     def __init__(self, x: float, y: float, radius: float) -> None:
         super().__init__(x, y, radius)
-        
-        self.asteroid = pygame.image.load("assets/ast1.png").convert_alpha()
-        self.asteroid = pygame.transform.scale(self.asteroid, (self.radius * 2, self.radius *2))
+
+        base_ast = get_random_asteroid_img()
+
+        # using smoothscale to try to maintain high res while shrinking
+        self.asteroid = pygame.transform.smoothscale(base_ast, (self.radius * 2, self.radius *2))
+        self.mask = pygame.mask.from_surface(self.asteroid)
 
     def draw(self, screen: pygame.Surface) -> None:
         # pygame.draw.circle(screen, "white", self.position, self.radius, constants.LINE_WIDTH)
-        image = self.asteroid
-        centered_rect = image.get_rect(center=self.position)
-        screen.blit(image, centered_rect)
+        centered_rect = self.asteroid.get_rect(center=self.position)
+        screen.blit(self.asteroid, centered_rect)
 
     def update(self, dt) -> None:
         self.position += self.velocity * dt
