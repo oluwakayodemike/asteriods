@@ -8,7 +8,7 @@ class Player(circleshape.CircleShape):
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
         self.shot_cool_down_timer = 0
-        self.spaceship = pygame.image.load("assets/spaceship.png").convert_alpha()
+        self.spaceship = pygame.image.load("assets/spaceship.pod.1.png").convert_alpha()
 
         # fit spaceship into circle 
         self.spaceship = pygame.transform.scale(self.spaceship, (self.radius * 2, self.radius * 2))
@@ -66,3 +66,25 @@ class Player(circleshape.CircleShape):
         rotated_with_speed_vector = rotated_vector * constants.PLAYER_SHOOT_SPEED
 
         shot.velocity += rotated_with_speed_vector
+
+    def collides_with(self, other) -> bool:
+        if not super().collides_with(other):
+            return False
+
+        # generating mask from the ship's current rotated image
+        rotated_image = pygame.transform.rotate(self.spaceship, (-self.rotation + 180))
+        ship_rect = rotated_image.get_rect(center=self.position)
+        ship_mask = pygame.mask.from_surface(rotated_image)
+
+        # circular mask matching the asteroid's shape/size
+        circle_surface = pygame.Surface((other.radius * 2, other.radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(circle_surface, (255, 255, 255), (other.radius, other.radius), other.radius)
+        asteroid_mask = pygame.mask.from_surface(circle_surface)
+
+        # distance between top-left corner of both objects
+        offset_x = int((other.position.x - other.radius) - ship_rect.x)
+        offset_y = int((other.position.y - other.radius) - ship_rect.y)
+
+        # overlap() returns the first point of contact or None if they're missed.
+        return ship_mask.overlap(asteroid_mask, (offset_x, offset_y)) is not None
+        
